@@ -17,6 +17,8 @@ configure_path = f'C:/Users/{username}/.copernicusmarine/.copernicusmarine-crede
 ```
 where username is replaced with your username.
 
+Create a folder for storing the output files: `copData/output_files`
+
 ## catalogue
 To find relevant chlorophyll data, it's probably easiest to search the string: 
 `**cmems_obs-oc_glo_bgc-plankton**` in https://documentation.marine.copernicus.eu/PUM/CMEMS-OC-PUM.pdf
