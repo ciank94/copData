@@ -51,6 +51,11 @@ mkdir copData/input_files
 mkdir copData/output_files
 ```	
 
+## usage
+In `copData/usage` folder, there are examples of how to use the package. There are three types of usage:
+1. `request_{experiment_name}` usage which requests chlorophyll data from Copernicus Marine Service
+2. `process_{experiment_name}` usage which checks coordinates, time, variables, and frequency of chlorophyll data and processes it if in expected format.
+3. `plot_{experiment_name}` usage which plots chlorophyll data with coastlines and geographic features.
 
 
 
