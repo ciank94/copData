@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "copChlHandler"
+name = "copchlhandler"
 version = "0.1.0"
 description = "pull data from copernicus marine service and climate data store"
 authors = ["Cian Kelly <cianrkelly23@gmail.com>"]
