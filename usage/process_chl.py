@@ -14,8 +14,8 @@ filename = os.path.join(filepath_input, fileid) #filepath_input + fileid
 
 
 # ==========Section 2: Prepare data=============
-parsed_file = inspectDataStructure(filename, filepath_output)
+parsed_file = logData(filename, filepath_output)
 parsed_file.parse_dataset()
-checkDataStructure(parsed_file)
+checkData(parsed_file)
 
 breakpoint()

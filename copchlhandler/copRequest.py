@@ -1,16 +1,16 @@
 import copernicusmarine as cop
 import os
-from copchlhandler import LoggerConfig
+from .logConfig import logConfig
 
-
-class ChlObsData:
+class checkRequest:
     def __init__(self, dataID, output_path):
         """Initialize the copDataID class.
 
         :param dataID: The data identifier.
         :type dataID: str
         """
-        self.logger = LoggerConfig(output_path, "readers.log").logger
+        name = os.path.basename(__file__)
+        self.logger = logConfig(output_path, name + ".log").logger
         self.logger.info(f"================={self.__class__.__name__}=====================")
         self.logger.info(f"Initializing {self.__class__.__name__}")
         self.logger.info(f"DataID: {dataID}")
@@ -57,7 +57,7 @@ class ChlObsData:
         return
     
 
-class Configuration:
+class requestConfig:
     def __init__(self, parse_file):
         
         self.logger = parse_file.logger
@@ -104,7 +104,7 @@ class Configuration:
         self.logger.info(f"Output path: {self.output_file}")
         return
 
-class DownloadData:
+class requestData:
     def __init__(self, config):
         self.logger = config.logger
         self.logger.info(f"================={self.__class__.__name__}=====================")

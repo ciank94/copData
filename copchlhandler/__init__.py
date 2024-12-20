@@ -1,3 +1,3 @@
-from .logger_config import LoggerConfig
-from .reader import ChlObsData, Configuration, DownloadData
-from .post_process import inspectDataStructure, checkDataStructure, chlDataHandler
+from .logConfig import logConfig
+from .copRequest import checkRequest, requestConfig, requestData
+from .copReader import logData, checkData, chlDataHandler

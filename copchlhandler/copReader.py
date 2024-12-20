@@ -1,9 +1,11 @@
 import xarray as xr
-from copchlhandler import LoggerConfig
+from .logConfig import logConfig
+import os
 # test
-class inspectDataStructure:
+class logData:
     def __init__(self, dataset_path, output_path):
-        self.logger = LoggerConfig(output_path, "post_process.log").logger
+        name = os.path.basename(__file__)
+        self.logger = logConfig(output_path, name + ".log").logger
         self.logger.info(f"================={self.__class__.__name__}=====================")
         self.logger.info(f"Initializing {self.__class__.__name__}")
         self.dataset_path = dataset_path
@@ -56,7 +58,7 @@ class inspectDataStructure:
 
         return 
     
-class checkDataStructure:
+class checkData:
     def __init__(self, parsed_file):
         self.logger = parsed_file.logger
         self.data = parsed_file.data

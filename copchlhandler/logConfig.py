@@ -1,8 +1,7 @@
 import logging
-from math import log
 import os
 
-class LoggerConfig:
+class logConfig:
     def __init__(self, output_path, output_file):
         self.output_path = output_path
         self.output_file = output_file
