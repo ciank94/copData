@@ -3,12 +3,13 @@ import xarray as xr
 import os
 
 class logData:
-    def __init__(self, dataset_path, output_path):
+    def __init__(self, file_prefix, filepath_input, filepath_output):
         name = os.path.basename(__file__)
-        self.logger = logConfig(output_path, name + ".log").logger
+        self.logger = logConfig(filepath_output, f"{name}_{file_prefix}.log").logger
         self.logger.info(f"================={self.__class__.__name__}=====================")
         self.logger.info(f"Initializing {self.__class__.__name__}")
-        self.dataset_path = dataset_path
+        self.dataset_path = os.path.join(filepath_input, f"{file_prefix}.nc")
+        self.output_path = filepath_output
         return
         
     def parse_dataset(self):
@@ -17,7 +18,6 @@ class logData:
         try:
             ds = xr.open_dataset(self.dataset_path)
 
-            
             # Log dataset attributes
             self.logger.info("================global attributes=====================")
             for attr_name, attr_value in ds.attrs.items():

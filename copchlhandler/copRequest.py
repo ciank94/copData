@@ -42,8 +42,23 @@ class checkRequest:
         elif "my" in split_name:
             self.period = "multi-year"
 
+        if "olci" in split_name:
+            self.sensor = "olci"
+        elif "multi" in split_name:
+            self.sensor = "multi"
+
+        if "multi-climatology" in split_name:
+            self.climatology = True
+        else:
+            self.climatology = False
+        
+        if "gapfree" in split_name:
+            self.gapfree = True
+        else:
+            self.gapfree = False
+
         if "4km" in split_name:
-            self.resolution = "04k"
+            self.resolution = "4km"
             res_print = "4km"
         elif "300m" in split_name:
             self.resolution = ".3k"
@@ -55,6 +70,9 @@ class checkRequest:
         self.logger.info(f"Period: {self.period}")
         self.logger.info(f"Resolution: {res_print}")
         self.logger.info(f"File prefix: {self.file_prefix}")
+        self.logger.info(f"Climatology: {self.climatology}")
+        self.logger.info(f"Gapfree: {self.gapfree}")
+        self.logger.info(f"Sensor: {self.sensor}")
         return
 
     def check_catalog(self):
@@ -65,17 +83,19 @@ class checkRequest:
             self.logger.warning(f"list of cmems_obs_glo_bgc_plankton_files: {cmems_obs_glo_bgc_plankton_files}")
             raise ValueError(
                 f"dataID does not match list of cmems_obs_glo_bgc_plankton_files, "
-                "have not checked reader functions yet, please add to list and check if needed"
+                "may be added to list and checked if needed"
             )
 
     def get_catalog(self):
         return [# Level 3 datasets
             "cmems_obs-oc_glo_bgc-plankton_my_l3-olci-4km_P1D",
-            "cmems_obs-oc_glo_bgc-plankton_nrt_l3-olci-300m_P1D"]
+            "cmems_obs-oc_glo_bgc-plankton_nrt_l3-olci-300m_P1D",
+            "cmems_obs-oc_glo_bgc-plankton_my_l4-multi-climatology-4km_P1D"]
     
 
 class requestConfig:
     def __init__(self, parse_file):
+        self.parse_file = parse_file
         self.logger = parse_file.logger
         self.logger.info(f"================={self.__class__.__name__}=====================")
         self.logger.info(f"Initializing {self.__class__.__name__}")
@@ -107,6 +127,7 @@ class requestConfig:
     def configure_variable(self, variables):
         # Retrieve the dataset using the data ID
         self.variables = variables
+        self.append_vars()
         self.logger.info(f"Variables: {self.variables}")
         self.config_prefix = self.parse_file.file_prefix + "_" + self.start_date[:10] 
         download_filename = self.config_prefix + ".nc"
@@ -114,10 +135,23 @@ class requestConfig:
         self.check_file_exists()
         return
 
+    def append_vars(self):
+        if (self.parse_file.resolution == "4km" and
+            self.parse_file.sensor == "olci" and
+            not self.parse_file.gapfree):
+            self.variables.append("CHL_gradient")
+        if self.parse_file.climatology:
+            self.variables.append("CHL_mean")
+            self.variables.append("CHL_max")
+            self.variables.append("CHL_min")
+            self.variables.append("CHL_standard_deviation")
+            self.variables.remove("CHL")
+        return
+
     def check_file_exists(self):
         if os.path.exists(self.output_file):
             self.logger.info(f"File already exists: {self.output_file}")
-            self.logger.info(f"Exiting as file {self.output_file} already exists")
+            self.logger.info(f"Exiting as file: {self.output_file} already exists")
             sys.exit()
         else:
             self.logger.info(f"File does not exist: {self.output_file}")

@@ -8,14 +8,17 @@ A package for handling chlorophyll data from Copernicus Marine Service:
 *`copchlhandler` was developed by Cian Kelly (ciank94) in 2025 to handle a few personal projects. There are probably bugs, and this package is not intended for production use. It is still in development.*
 
 ## catalogue
-To find relevant chlorophyll observation data, search https://documentation.marine.copernicus.eu/PUM/CMEMS-OC-PUM.pdf with string: 
-`**cmems_obs-oc_glo_bgc-plankton**`. At time of writing, 17 relevant datasets were found.\n
-check the following before requesting data:
+To find relevant chlorophyll observation data, search [Product User Manual](https://documentation.marine.copernicus.eu/PUM/CMEMS-OC-PUM.pdf) with string: 
+`**cmems_obs-oc_glo_bgc-plankton**`. At time of writing, 17 relevant datasets were found. Check `usage/catalog.txt` for a list of datasets handled.
+\n
+Check the following before requesting data:
 -  check if prefix matches: cmems_obs-oc_glo_bgc-plankton
 -  check if frequency of data is daily (P1D) or monthly (P1M) 
 -  check if satellite product is level 3 (l3) or level 4 (l4)
 -  check if dataset is near-real-time (nrt) or multi-year (my) (if nrt year should be >= 2023-04-05 as of writing)
-- check if resolution is 4km (4km) or 300m (300m)
+- check if dateset is multi-climatology: coordinates could be between [2008-01-01 00:00:00, 2008-12-31 00:00:00] for some datasets
+- check if resolution is 4km or 300m
+- check Part II: Description of the Product Specification in [Product User Manual](https://documentation.marine.copernicus.eu/PUM/CMEMS-OC-PUM.pdf) for more information
 
 ## installation:
 -  clone the repository:
@@ -53,7 +56,7 @@ configure_path = f'C:/Users/{username}/.copernicusmarine/.copernicusmarine-crede
 mkdir ./input_files
 mkdir ./output_files
 ```	
-- netcdf files will be downloaded to the `input_files` folder with the filename `{chl}_{resolution}_{date_start}.nc` where `{resolution}` is the resolution of the dataset (.04k for 4km, .3k for 300m), and `{date_start}` is the start date of the dataset (yyyy-mm-dd). Note: netcdf files are not downloaded if they already exist in the `input_files` folder. Note: if trying to download a new file with the same start date but different end date the file will not be downloaded.
+- netcdf files will be downloaded to the `input_files` folder with the filename `{chl}_{resolution}_{date_start}.nc` where `{resolution}` is the resolution of the dataset (4km for 4km, .3k for 300m), and `{date_start}` is the start date of the dataset (yyyy-mm-dd). Note: netcdf files are not downloaded if they already exist in the `input_files` folder. Note: if trying to download a new file with the same start date but different end date the file will not be downloaded.
 - log files produced from running scripts will be created in the `output_files` folder with the filename `copRequest.py_{chl}_{resolution}_{date_start}.log`. The logger uses the python `logging` module with a custom format. Note: if the netcdf file already exists or there is an error/ issue downloading the netcdf file, the log file name will be `copRequest.py_{exit}.log`.
 
 ## usage

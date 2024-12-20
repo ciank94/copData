@@ -1,13 +1,13 @@
 from copchlhandler import *
 
 #================test parameters================
-dataID = 'cmems_obs-oc_glo_bgc-plankton_my_l3-olci-4km_P1D'
+dataID = 'cmems_obs-oc_glo_bgc-plankton_my_l4-multi-climatology-4km_P1D'
 #configure_path = '/home/ciank/.copernicusmarine/' # wsl
 configure_path = 'C:/Users/ciank/.copernicusmarine/' # windows
 input_path = 'input_files'
 output_path = 'output_files'
-start_date = "2016-12-18T00:00:00"
-end_date = "2016-12-19T00:00:00"
+start_date = "2005-12-18T00:00:00"
+end_date = "2005-12-19T00:00:00"
 lon_bounds = [-70, -31]
 lat_bounds = [-73, -50]
 

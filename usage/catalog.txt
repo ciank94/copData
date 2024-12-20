@@ -1,0 +1,8 @@
+#==========================Note================================
+# catalog of datasets handled by copchlhandler as of today
+# check copchlhandler/copRequest.checkRequest.get_catalog()
+
+#===============List of datasets===============================
+"cmems_obs-oc_glo_bgc-plankton_my_l3-olci-4km_P1D",
+"cmems_obs-oc_glo_bgc-plankton_nrt_l3-olci-300m_P1D",
+"cmems_obs-oc_glo_bgc-plankton_my_l4-multi-climatology-4km_P1D"
