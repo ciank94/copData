@@ -14,20 +14,14 @@ class checkRequest:
         self.logger.info(f"================={self.__class__.__name__}=====================")
         self.logger.info(f"Initializing {self.__class__.__name__}")
         self.logger.info(f"DataID: {dataID}")
-        cmems_obs_glo_bgc_plankton_files = [
-            # Level 3 datasets
-            "cmems_obs-oc_glo_bgc-plankton_my_l3-olci-4km_P1D",
-        ]
-        if dataID in cmems_obs_glo_bgc_plankton_files:
-            self.logger.info(f"dataID matches item in list of cmems_obs_glo_bgc_plankton_files")
-        else:
-            self.logger.warning(f"list of cmems_obs_glo_bgc_plankton_files: {cmems_obs_glo_bgc_plankton_files}")
-            raise ValueError(
-                f"dataID does not match list of cmems_obs_glo_bgc_plankton_files, "
-                "please add to list if needed"
-            )
+        
         self.dataID = dataID
-        split_name = dataID.replace('_', '-').split('-')
+        self.spilt_name()
+        self.check_catalog()
+        return
+    
+    def spilt_name(self):
+        split_name = self.dataID.replace('_', '-').split('-')
         if "P1D" in split_name:
             self.frequency = "daily"
         elif "P1M" in split_name:
@@ -42,7 +36,7 @@ class checkRequest:
             self.period = "near-real-time"
         elif "my" in split_name:
             self.period = "multi-year"
-        
+
         if "4km" in split_name:
             self.resolution = "4km"
         elif "300m" in split_name:
@@ -55,6 +49,22 @@ class checkRequest:
         self.logger.info(f"Resolution: {self.resolution}")
         self.logger.info(f"File prefix: {self.file_prefix}")
         return
+
+    def check_catalog(self):
+        cmems_obs_glo_bgc_plankton_files = self.get_catalog()
+        if self.dataID in cmems_obs_glo_bgc_plankton_files:
+            self.logger.info(f"dataID matches item in list of cmems_obs_glo_bgc_plankton_files")
+        else:
+            self.logger.warning(f"list of cmems_obs_glo_bgc_plankton_files: {cmems_obs_glo_bgc_plankton_files}")
+            raise ValueError(
+                f"dataID does not match list of cmems_obs_glo_bgc_plankton_files, "
+                "have not checked reader functions yet, please add to list and check if needed"
+            )
+
+    def get_catalog(self):
+        return [# Level 3 datasets
+            "cmems_obs-oc_glo_bgc-plankton_my_l3-olci-4km_P1D",
+            "cmems_obs-oc_glo_bgc-plankton_nrt_l3-olci-300m_P1D"]
     
 
 class requestConfig:
