@@ -1,3 +1,5 @@
+import logging
+from turtle import down
 from .logConfig import logConfig
 import copernicusmarine as cop
 import os
@@ -12,10 +14,12 @@ class checkRequest:
         :type dataID: str
         """
         name = os.path.basename(__file__)
-        self.logger = logConfig(output_path, name + ".log").logger
+        self.log_file_name = name +'_exit.log' # initialize log file assuming it exists
+        self.log_file_path = os.path.join(output_path, self.log_file_name)
+        self.logger = logConfig(output_path, self.log_file_name).logger
         self.logger.info(f"================={self.__class__.__name__}=====================")
         self.logger.info(f"Initializing {self.__class__.__name__}")
-        self.logger.info(f"DataID: {dataID}")     
+        self.logger.info(f"DataID: {dataID}")    
         self.dataID = dataID
         self.spilt_name()
         self.check_catalog()
@@ -104,8 +108,9 @@ class requestConfig:
         # Retrieve the dataset using the data ID
         self.variables = variables
         self.logger.info(f"Variables: {self.variables}")
-        config_prefix = self.parse_file.file_prefix + "_" + self.start_date[:10] + ".nc"
-        self.output_file = os.path.join(self.output_path, config_prefix)
+        self.config_prefix = self.parse_file.file_prefix + "_" + self.start_date[:10] 
+        download_filename = self.config_prefix + ".nc"
+        self.output_file = os.path.join(self.output_path, download_filename)
         self.check_file_exists()
         return
 
@@ -128,11 +133,12 @@ class requestConfig:
 
 class requestData:
     def __init__(self, config):
+        self.config = config
         self.logger = config.logger
         self.logger.info(f"================={self.__class__.__name__}=====================")
         self.logger.info(f"Initializing {self.__class__.__name__}")
-        self.config = config
         self.request_data()
+        self.change_log_file_name()
         return
 
     def request_data(self):
@@ -151,3 +157,18 @@ class requestData:
             credentials_file=self.config.credentials_file,
             force_download=True,
         )
+    
+    def change_log_file_name(self):
+        self.logger.info(f"Successfully downloaded file, shutting down logger and" 
+        f"renaming log file")
+        logging.shutdown()
+        split_name = self.config.parse_file.log_file_name.split('_')
+        new_name = split_name[0] + '_' + self.config.config_prefix + '.log'
+        original_path = self.config.parse_file.log_file_path
+        new_path = os.path.join(os.path.dirname(original_path), new_name)
+        # Check if the destination file already exists
+        if os.path.exists(new_path):
+            os.remove(new_path)  # Remove the existing file
+        os.rename(original_path, new_path)
+        
+        return

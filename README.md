@@ -1,18 +1,18 @@
 # copchlhandler
 A package for handling chlorophyll data from Copernicus Marine Service:
 -  handles reading and downloading chlorophyll data from Copernicus Marine Service
--  logs info about chlorophyll data structure
+-  logs info about chlorophyll data structure (dimensions, variables, resolution, etc.)
 -  contains plotting functions for visualizing datasets
 
 **Note:**
-*`copchlhandler` was developed by Cian Kelly (ciank94) in 2025 to handle a few personal projects. There are probably bugs, and this package is not intended for production use. It is still in development, but may be useful for other users.*
+*`copchlhandler` was developed by Cian Kelly (ciank94) in 2025 to handle a few personal projects. There are probably bugs, and this package is not intended for production use. It is still in development.*
 
 ## catalogue
 To find relevant chlorophyll observation data, search https://documentation.marine.copernicus.eu/PUM/CMEMS-OC-PUM.pdf with string: 
 `**cmems_obs-oc_glo_bgc-plankton**`. At time of writing, 17 relevant datasets were found.\n
 check the following before requesting data:
 -  check if prefix matches: cmems_obs-oc_glo_bgc-plankton
--  check frequency of data (daily or monthly)
+-  check if frequency of data is daily (P1D) or monthly (P1M) 
 -  check if satellite product is level 3 (l3) or level 4 (l4)
 -  check if dataset is near-real-time (nrt) or multi-year (my) (if nrt year should be >= 2023-04-05 as of writing)
 - check if resolution is 4km (4km) or 300m (300m)
@@ -37,7 +37,7 @@ git clone https://github.com/ciank94/copData.git
 -  **Note:**
 *`copernicusmarine` is a python package for accessing Copernicus Marine Service data. Check `/pyproject.toml` for version information if there are any issues with dependencies and raise them on github. Also check the [Copernicus Marine Toolbox](https://help.marine.copernicus.eu/en/articles/7949409-copernicus-marine-toolbox-introduction) documentation.*
 ## setup
-1. To use package, register account with [Copernicus Marine Service](https://marine.copernicus.eu/) and login with the following command (once off):
+1. To use package, use or register account details with [Copernicus Marine Service](https://marine.copernicus.eu/) and login with the following command (once off):
 ```python
 import copernicusmarine as cop
 cop.login()
@@ -53,8 +53,8 @@ configure_path = f'C:/Users/{username}/.copernicusmarine/.copernicusmarine-crede
 mkdir ./input_files
 mkdir ./output_files
 ```	
-- netcdf files will be downloaded to the `input_files` folder with the filename `{chl}_{resolution}_{date_start}.nc` where `{resolution}` is the resolution of the dataset (.04k for 4km, .3k for 300m), and `{date_start}` is the start date of the dataset (yyyy-mm-dd).
-- log files produced from running scripts will be created in the `output_files` folder with the filename `{module_name}.log`. This uses the python `logging` module with a custom format.
+- netcdf files will be downloaded to the `input_files` folder with the filename `{chl}_{resolution}_{date_start}.nc` where `{resolution}` is the resolution of the dataset (.04k for 4km, .3k for 300m), and `{date_start}` is the start date of the dataset (yyyy-mm-dd). Note: netcdf files are not downloaded if they already exist in the `input_files` folder. Note: if trying to download a new file with the same start date but different end date the file will not be downloaded.
+- log files produced from running scripts will be created in the `output_files` folder with the filename `copRequest.py_{chl}_{resolution}_{date_start}.log`. The logger uses the python `logging` module with a custom format. Note: if the netcdf file already exists or there is an error/ issue downloading the netcdf file, the log file name will be `copRequest.py_{exit}.log`.
 
 ## usage
 In `usage` folder, there are examples of how to use the package. There are three types of usage:
