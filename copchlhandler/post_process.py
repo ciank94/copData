@@ -1,6 +1,5 @@
-from numpy import shape
 import xarray as xr
-from copChlHandler import LoggerConfig
+from copchlhandler import LoggerConfig
 # test
 class inspectDataStructure:
     def __init__(self, dataset_path, output_path):

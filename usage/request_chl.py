@@ -1,9 +1,9 @@
-from copChlHandler import *
+from copchlhandler import *
 
 #================test parameters================
 dataID = 'cmems_obs-oc_glo_bgc-plankton_my_l3-olci-4km_P1D'
 configure_path = '/home/ciank/.copernicusmarine/' # wsl
-configure_path = 'C:/Users/ciank/.copernicusmarine/' # windows
+#configure_path = 'C:/Users/ciank/.copernicusmarine/' # windows
 input_path = 'input_files'
 output_path = 'output_files'
 start_date = "2016-12-18T00:00:00"

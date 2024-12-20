@@ -1,6 +1,6 @@
 import copernicusmarine as cop
 import os
-from copChlHandler import LoggerConfig
+from copchlhandler import LoggerConfig
 
 
 class ChlObsData:

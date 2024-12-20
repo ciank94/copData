@@ -50,6 +50,8 @@ configure_path = f'C:/Users/{username}/.copernicusmarine/.copernicusmarine-crede
 mkdir copData/input_files
 mkdir copData/output_files
 ```	
+- todo: naming of netcdf files
+- The log files will be created in the `output_files` folder with the filename `{module_name}.log`
 
 ## usage
 In `copData/usage` folder, there are examples of how to use the package. There are three types of usage:

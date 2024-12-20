@@ -1,5 +1,5 @@
 # ===========Section 0: imports=============
-from copChlHandler import *    
+from copchlhandler import *    
 import os
 
 # ==========Section 1: Parameters=============
