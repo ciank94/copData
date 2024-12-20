@@ -1,7 +1,7 @@
-import xarray as xr
 from .logConfig import logConfig
+import xarray as xr
 import os
-# test
+
 class logData:
     def __init__(self, dataset_path, output_path):
         name = os.path.basename(__file__)

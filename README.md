@@ -35,27 +35,26 @@ git clone https://github.com/ciank94/copData.git
   poetry install
   ```
 -  **Note:**
-*`copernicusmarine` is a python package for accessing Copernicus Marine Service data. Check `/pyproject.toml` for version information if there are any issues with dependencies and raise them on github.*
-
+*`copernicusmarine` is a python package for accessing Copernicus Marine Service data. Check `/pyproject.toml` for version information if there are any issues with dependencies and raise them on github. Also check the [Copernicus Marine Toolbox](https://help.marine.copernicus.eu/en/articles/7949409-copernicus-marine-toolbox-introduction) documentation.*
 ## setup
-1. To use package, register account with Copernicus Marine Service at https://marine.copernicus.eu/ and login with the following command (once off):
+1. To use package, register account with [Copernicus Marine Service](https://marine.copernicus.eu/) and login with the following command (once off):
 ```python
 import copernicusmarine as cop
 cop.login()
 ```
-and this will store credentials in a .copernicusmarine-credentials file which may be found in the following paths (check directory for linux/ windows):
+and this will store credentials in a .copernicusmarine-credentials file that is printed to the terminal. For example, the file could be in the following paths (check directory for linux/ windows):
 ```python
 configure_path = f'/home/{username}/.copernicusmarine/.copernicusmarine-credentials' # wsl/linux
 configure_path = f'C:/Users/{username}/.copernicusmarine/.copernicusmarine-credentials' # windows
 ```
-login is only required once.
+**Note:** login is only required once.
 2. Create a folder for storing input (netcdf files) and output (log files) named `input_files` and `output_files` in project root directory:
 ```bash
 mkdir ./input_files
 mkdir ./output_files
 ```	
-- todo: naming of netcdf files
-- The log files will be created in the `output_files` folder with the filename `{module_name}.log`
+- netcdf files will be downloaded to the `input_files` folder with the filename `{chl}_{resolution}_{date_start}.nc` where `{resolution}` is the resolution of the dataset (.04k for 4km, .3k for 300m), and `{date_start}` is the start date of the dataset (yyyy-mm-dd).
+- log files produced from running scripts will be created in the `output_files` folder with the filename `{module_name}.log`. This uses the python `logging` module with a custom format.
 
 ## usage
 In `usage` folder, there are examples of how to use the package. There are three types of usage:

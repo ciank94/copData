@@ -1,6 +1,8 @@
+from .logConfig import logConfig
 import copernicusmarine as cop
 import os
-from .logConfig import logConfig
+import sys
+
 
 class checkRequest:
     def __init__(self, dataID, output_path):
@@ -13,13 +15,12 @@ class checkRequest:
         self.logger = logConfig(output_path, name + ".log").logger
         self.logger.info(f"================={self.__class__.__name__}=====================")
         self.logger.info(f"Initializing {self.__class__.__name__}")
-        self.logger.info(f"DataID: {dataID}")
-        
+        self.logger.info(f"DataID: {dataID}")     
         self.dataID = dataID
         self.spilt_name()
         self.check_catalog()
         return
-    
+
     def spilt_name(self):
         split_name = self.dataID.replace('_', '-').split('-')
         if "P1D" in split_name:
@@ -38,15 +39,17 @@ class checkRequest:
             self.period = "multi-year"
 
         if "4km" in split_name:
-            self.resolution = "4km"
+            self.resolution = "04k"
+            res_print = "4km"
         elif "300m" in split_name:
-            self.resolution = "300m"
+            self.resolution = ".3k"
+            res_print = "300m"
         
-        self.file_prefix = f"chl_obs_{self.frequency}_L{self.level}_{self.period}_{self.resolution}"
+        self.file_prefix = f"chl_{self.resolution}"
         self.logger.info(f"Frequency: {self.frequency}")
         self.logger.info(f"Level: {self.level}")
         self.logger.info(f"Period: {self.period}")
-        self.logger.info(f"Resolution: {self.resolution}")
+        self.logger.info(f"Resolution: {res_print}")
         self.logger.info(f"File prefix: {self.file_prefix}")
         return
 
@@ -69,7 +72,6 @@ class checkRequest:
 
 class requestConfig:
     def __init__(self, parse_file):
-        
         self.logger = parse_file.logger
         self.logger.info(f"================={self.__class__.__name__}=====================")
         self.logger.info(f"Initializing {self.__class__.__name__}")
@@ -98,20 +100,30 @@ class requestConfig:
         self.logger.info(f"End date: {self.end_date}")
         return
 
+    def configure_variable(self, variables):
+        # Retrieve the dataset using the data ID
+        self.variables = variables
+        self.logger.info(f"Variables: {self.variables}")
+        config_prefix = self.parse_file.file_prefix + "_" + self.start_date[:10] + ".nc"
+        self.output_file = os.path.join(self.output_path, config_prefix)
+        self.check_file_exists()
+        return
+
+    def check_file_exists(self):
+        if os.path.exists(self.output_file):
+            self.logger.info(f"File already exists: {self.output_file}")
+            self.logger.info(f"Exiting as file {self.output_file} already exists")
+            sys.exit()
+        else:
+            self.logger.info(f"File does not exist: {self.output_file}")
+            self.logger.info(f"File will be downloaded: {self.output_file}")
+        return
+
     def configure_domain(self, lon_bounds, lat_bounds):
         self.lon_bounds = lon_bounds
         self.lat_bounds = lat_bounds
         self.logger.info(f"Longitude bounds: {self.lon_bounds}")
         self.logger.info(f"Latitude bounds: {self.lat_bounds}")
-        return
-
-    def configure_variable(self, variables):
-        # Retrieve the dataset using the data ID
-        self.variables = variables
-        self.logger.info(f"Variables: {self.variables}")
-        config_prefix = self.parse_file.file_prefix + "_" + self.start_date[:10] + "_to_" + self.end_date[:10] + ".nc"
-        self.output_file = os.path.join(self.output_path, config_prefix)
-        self.logger.info(f"Output path: {self.output_file}")
         return
 
 class requestData:
