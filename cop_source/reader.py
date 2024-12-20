@@ -1,27 +1,43 @@
 import copernicusmarine as cop
 import os
-from .logger_config import setup_logger
+import logging
 
-logger = setup_logger('reader')
+# Setup module logger
+def logger_reader(output_path):
+    log_format = '%(asctime)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s'
+    date_format = '%Y-%m-%d %H:%M:%S'
+
+    # Create logger
+    logger = logging.getLogger(__name__) # gets the name of the current module
+    logging.basicConfig(level=logging.INFO,
+                        format=log_format,
+                        datefmt=date_format,
+                        handlers=[
+                            logging.FileHandler(os.path.join(output_path, 'request.log'), mode='w'),
+                            logging.StreamHandler()
+                        ])
+    logger.setLevel(logging.INFO)
+    return logger
 
 class ChlObsData:
-    def __init__(self, dataID):
+    def __init__(self, dataID, output_path):
         """Initialize the copDataID class.
 
         :param dataID: The data identifier.
         :type dataID: str
         """
-        logger.info(f"================={self.__class__.__name__}=====================")
-        logger.info(f"Initializing {self.__class__.__name__}")
-        logger.info(f"DataID: {dataID}")
+        self.logger = logger_reader(output_path)
+        self.logger.info(f"================={self.__class__.__name__}=====================")
+        self.logger.info(f"Initializing {self.__class__.__name__}")
+        self.logger.info(f"DataID: {dataID}")
         cmems_obs_glo_bgc_plankton_files = [
             # Level 3 datasets
             "cmems_obs-oc_glo_bgc-plankton_my_l3-olci-4km_P1D",
         ]
         if dataID in cmems_obs_glo_bgc_plankton_files:
-            logger.info(f"dataID matches item in list of cmems_obs_glo_bgc_plankton_files")
+            self.logger.info(f"dataID matches item in list of cmems_obs_glo_bgc_plankton_files")
         else:
-            logger.warning(f"list of cmems_obs_glo_bgc_plankton_files: {cmems_obs_glo_bgc_plankton_files}")
+            self.logger.warning(f"list of cmems_obs_glo_bgc_plankton_files: {cmems_obs_glo_bgc_plankton_files}")
             raise ValueError(
                 f"dataID does not match list of cmems_obs_glo_bgc_plankton_files, "
                 "please add to list if needed"
@@ -49,63 +65,66 @@ class ChlObsData:
             self.resolution = "300m"
         
         self.file_prefix = f"chl_obs_{self.frequency}_L{self.level}_{self.period}_{self.resolution}"
-        logger.info(f"Frequency: {self.frequency}")
-        logger.info(f"Level: {self.level}")
-        logger.info(f"Period: {self.period}")
-        logger.info(f"Resolution: {self.resolution}")
-        logger.info(f"File prefix: {self.file_prefix}")
+        self.logger.info(f"Frequency: {self.frequency}")
+        self.logger.info(f"Level: {self.level}")
+        self.logger.info(f"Period: {self.period}")
+        self.logger.info(f"Resolution: {self.resolution}")
+        self.logger.info(f"File prefix: {self.file_prefix}")
         return
     
 
 class Configuration:
     def __init__(self, parse_file):
-        logger.info(f"================={self.__class__.__name__}=====================")
-        logger.info(f"Initializing {self.__class__.__name__}")
+        
+        self.logger = parse_file.logger
+        self.logger.info(f"================={self.__class__.__name__}=====================")
+        self.logger.info(f"Initializing {self.__class__.__name__}")
         self.parse_file = parse_file # instance of cmems data class
         if not hasattr(self.parse_file, 'file_prefix') or self.parse_file.file_prefix is None:
             raise AttributeError(f"File prefix is not set")
         return
 
-    def configure_path(self, config_path, output_path):
+    def configure_path(self, config_path, input_path):
         # check output path
-        if not os.path.exists(output_path):
-            raise ValueError(f"Output path does not exist: {output_path}")
-        self.output_path = output_path
-        logger.info(f"Output path: {output_path}")
+        if not os.path.exists(input_path):
+            raise ValueError(f"Output path does not exist: {input_path}")
+        self.output_path = input_path
+        self.logger.info(f"Output path: {input_path}")
         self.credentials_file=config_path + ".copernicusmarine-credentials"
         # check credentials file
         if not os.path.exists(self.credentials_file):
             raise ValueError(f"Credentials file does not exist: {self.credentials_file}")
-        logger.info(f"Credentials file: {self.credentials_file}")
+        self.logger.info(f"Credentials file: {self.credentials_file}")
         return
 
     def configure_time(self, start_date, end_date):
         self.start_date = start_date
         self.end_date = end_date
-        logger.info(f"Start date: {self.start_date}")
-        logger.info(f"End date: {self.end_date}")
+        self.logger.info(f"Start date: {self.start_date}")
+        self.logger.info(f"End date: {self.end_date}")
         return
 
     def configure_domain(self, lon_bounds, lat_bounds):
         self.lon_bounds = lon_bounds
         self.lat_bounds = lat_bounds
-        logger.info(f"Longitude bounds: {self.lon_bounds}")
-        logger.info(f"Latitude bounds: {self.lat_bounds}")
+        self.logger.info(f"Longitude bounds: {self.lon_bounds}")
+        self.logger.info(f"Latitude bounds: {self.lat_bounds}")
         return
 
     def configure_variable(self, variables):
         # Retrieve the dataset using the data ID
         self.variables = variables
-        logger.info(f"Variables: {self.variables}")
+        self.logger.info(f"Variables: {self.variables}")
         config_prefix = self.parse_file.file_prefix + "_" + self.start_date[:10] + "_to_" + self.end_date[:10] + ".nc"
         self.output_file = os.path.join(self.output_path, config_prefix)
-        logger.info(f"Output path: {self.output_file}")
+        self.logger.info(f"Output path: {self.output_file}")
         return
 
 class DownloadData:
     def __init__(self, config):
-        logger.info(f"================={self.__class__.__name__}=====================")
-        logger.info(f"Initializing {self.__class__.__name__}")
+        self.logger = config.logger
+        self.logger.info(f"================={self.__class__.__name__}=====================")
+        self.logger.info(f"Initializing {self.__class__.__name__}")
         self.config = config
         self.request_data()
         return
