@@ -1,5 +1,5 @@
 # ===========Section 0: imports=============
-from cop_source import *    
+from copChlHandler import *    
 import os
 
 # ==========Section 1: Parameters=============
@@ -14,8 +14,8 @@ filename = os.path.join(filepath_input, fileid) #filepath_input + fileid
 
 
 # ==========Section 2: Prepare data=============
-parse_file = DataAnalysis(filename, filepath_output)
-df, var_names = parse_file.analyze_dataset()
-PostProcess(df, filename)
+parsed_file = inspectDataStructure(filename, filepath_output)
+parsed_file.parse_dataset()
+checkDataStructure(parsed_file)
 
 breakpoint()
